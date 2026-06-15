@@ -46,6 +46,6 @@ final class AppServiceProvider extends ServiceProvider
         Scramble::configure()
             ->routes(fn (Route $route): bool => Str::startsWith(haystack: $route->uri, needles: 'api/v1'));
 
-        Gate::define('viewApiDocs', fn (): bool => true);
+        Gate::define('viewApiDocs', static fn ($user = null): bool => true);
     }
 }
