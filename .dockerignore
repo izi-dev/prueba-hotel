@@ -30,7 +30,8 @@ rector.php
 pest.php
 
 *.md
-docs
+!README.md
+!docs/**
 
 database/factories
 
