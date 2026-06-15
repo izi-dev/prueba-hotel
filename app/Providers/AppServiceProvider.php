@@ -7,6 +7,7 @@ namespace App\Providers;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -34,6 +35,10 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Scramble::configure()
             ->routes(fn (Route $route): bool => Str::startsWith(haystack: $route->uri, needles: 'api/v1'));
 
