@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 final class DocumentacionController extends Controller
 {
     /** @var array<string, array{path: string, title: string}> */
-    private const PAGES = [
+    private const array PAGES = [
         'proyecto' => ['path' => 'README.md', 'title' => 'README del proyecto'],
         'uml' => ['path' => 'docs/uml.md', 'title' => 'Diagramas UML'],
         'despliegue' => ['path' => 'docs/deployment.md', 'title' => 'Despliegue'],
@@ -36,15 +36,11 @@ final class DocumentacionController extends Controller
     {
         $config = self::PAGES[$page] ?? null;
 
-        if ($config === null) {
-            throw new NotFoundHttpException;
-        }
+        throw_if($config === null, NotFoundHttpException::class);
 
         $fullPath = base_path($config['path']);
 
-        if (! is_file($fullPath)) {
-            throw new NotFoundHttpException;
-        }
+        throw_unless(is_file($fullPath), NotFoundHttpException::class);
 
         return view('documentacion-page', [
             'title' => $config['title'],
@@ -59,9 +55,7 @@ final class DocumentacionController extends Controller
     {
         $path = base_path('docs/openapi.yaml');
 
-        if (! is_file($path)) {
-            throw new NotFoundHttpException;
-        }
+        throw_unless(is_file($path), NotFoundHttpException::class);
 
         return response()->file($path, [
             'Content-Type' => 'application/yaml',
