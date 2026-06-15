@@ -71,7 +71,43 @@
                                class="rounded-lg border border-white/10 px-4 py-3 text-xs text-slate-400 transition hover:text-slate-200">
                                 OpenAPI JSON
                             </a>
+                            <a href="https://github.com/izi-dev/prueba-hotel"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="rounded-lg border border-white/15 px-4 py-3 text-sm font-medium text-white transition hover:border-indigo-400/50 hover:bg-white/5">
+                                Código fuente (GitHub)
+                            </a>
+                            <a href="https://github.com/izi-dev/prueba-hotel/actions"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="rounded-lg border border-white/15 px-4 py-3 text-sm font-medium text-white transition hover:border-indigo-400/50 hover:bg-white/5">
+                                Pipeline CI (GitHub Actions)
+                            </a>
                         </nav>
+                    </div>
+
+                    <div class="mt-4 rounded-2xl border border-white/10 bg-white/5 p-6 text-xs text-slate-400">
+                        <p class="font-medium text-slate-300">Repositorio y CI</p>
+                        <p class="mt-3 leading-relaxed">
+                            El código completo está en
+                            <a href="https://github.com/izi-dev/prueba-hotel"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="text-indigo-300 underline decoration-indigo-300/40 underline-offset-2 hover:text-indigo-200">
+                                GitHub
+                            </a>.
+                            Cada push a <code class="rounded bg-white/10 px-1 py-0.5 text-slate-300">main</code>
+                            dispara el workflow de
+                            <a href="https://github.com/izi-dev/prueba-hotel/actions"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="text-indigo-300 underline decoration-indigo-300/40 underline-offset-2 hover:text-indigo-200">
+                                GitHub Actions
+                            </a>:
+                            auditoría Composer, Pint, PHPStan, Rector, Pest (backend) y
+                            <code class="rounded bg-white/10 px-1 py-0.5 text-slate-300">npm ci</code> +
+                            build de Vite (frontend).
+                        </p>
                     </div>
 
                     <div class="mt-4 rounded-2xl border border-white/10 bg-white/5 p-6 text-xs text-slate-400">

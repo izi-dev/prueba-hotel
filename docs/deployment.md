@@ -23,8 +23,7 @@ APP_NAME="Gestión Hotelera"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://tu-dominio.com
-# Debe usar https:// si el dominio tiene TLS; si queda en http://, el navegador
-# bloqueará los CSS/JS de Vite por contenido mixto.
+# APP_URL debe usar https:// con TLS; si queda en http://, el navegador bloqueará CSS/JS (mixed content).
 APP_KEY=base64:...
 
 DB_CONNECTION=pgsql
