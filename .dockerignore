@@ -33,7 +33,6 @@ pest.php
 docs
 
 database/factories
-database/seeders
 
 .idea
 .vscode
