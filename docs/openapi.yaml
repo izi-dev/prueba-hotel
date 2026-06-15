@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: API Gestión Hotelera
+  version: 1.0.0
+  description: API REST para administrar hoteles y configuraciones de habitación.
+servers:
+  - url: /api/v1
+paths:
+  /cities:
+    get:
+      summary: Listar ciudades
+      tags: [Catálogos]
+      responses:
+        '200':
+          description: Lista de ciudades
+  /room-types:
+    get:
+      summary: Listar tipos de habitación
+      tags: [Catálogos]
+      responses:
+        '200':
+          description: Lista de tipos
+  /room-types/{roomTypeId}/accommodations:
+    get:
+      summary: Acomodaciones válidas por tipo
+      tags: [Catálogos]
+      parameters:
+        - name: roomTypeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Acomodaciones permitidas
+  /hotels:
+    get:
+      summary: Listar hoteles
+      tags: [Hoteles]
+      responses:
+        '200':
+          description: Lista de hoteles
+    post:
+      summary: Crear hotel
+      tags: [Hoteles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelInput'
+      responses:
+        '201':
+          description: Hotel creado
+        '422':
+          description: Validación o NIT duplicado
+  /hotels/{id}:
+    get:
+      summary: Obtener hotel
+      tags: [Hoteles]
+      parameters:
+        - $ref: '#/components/parameters/HotelId'
+      responses:
+        '200':
+          description: Detalle del hotel
+        '404':
+          description: No encontrado
+    put:
+      summary: Actualizar hotel
+      tags: [Hoteles]
+      parameters:
+        - $ref: '#/components/parameters/HotelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelInput'
+      responses:
+        '200':
+          description: Hotel actualizado
+    delete:
+      summary: Eliminar hotel
+      tags: [Hoteles]
+      parameters:
+        - $ref: '#/components/parameters/HotelId'
+      responses:
+        '204':
+          description: Eliminado
+  /hotels/{hotelId}/room-configurations:
+    get:
+      summary: Listar configuraciones
+      tags: [Configuraciones]
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPath'
+      responses:
+        '200':
+          description: Lista de configuraciones
+    post:
+      summary: Crear configuración
+      tags: [Configuraciones]
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomConfigurationInput'
+      responses:
+        '201':
+          description: Configuración creada
+        '422':
+          description: Regla de negocio incumplida
+  /hotels/{hotelId}/room-configurations/{configurationId}:
+    put:
+      summary: Actualizar configuración
+      tags: [Configuraciones]
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPath'
+        - name: configurationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomConfigurationInput'
+      responses:
+        '200':
+          description: Actualizada
+    delete:
+      summary: Eliminar configuración
+      tags: [Configuraciones]
+      parameters:
+        - $ref: '#/components/parameters/HotelIdPath'
+        - name: configurationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Eliminada
+components:
+  parameters:
+    HotelId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    HotelIdPath:
+      name: hotelId
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    HotelInput:
+      type: object
+      required: [name, address, city_id, nit, max_rooms]
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        city_id:
+          type: integer
+        nit:
+          type: string
+          example: "12345678-9"
+        max_rooms:
+          type: integer
+          minimum: 1
+    RoomConfigurationInput:
+      type: object
+      required: [room_type_id, accommodation_id, quantity]
+      properties:
+        room_type_id:
+          type: integer
+        accommodation_id:
+          type: integer
+        quantity:
+          type: integer
+          minimum: 1

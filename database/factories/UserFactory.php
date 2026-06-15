@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\User;
@@ -8,17 +10,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * Factory de usuarios para pruebas y seeders de Laravel.
+ *
+ * Genera credenciales ficticias con contraseña hasheada reutilizable
+ * entre instancias para optimizar la suite de tests.
+ *
  * @extends Factory<User>
  */
-class UserFactory extends Factory
+final class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Contraseña en caché compartida entre llamadas a la factory.
      */
-    protected static ?string $password;
+    private static string $password;
 
     /**
-     * Define the model's default state.
+     * Define el estado por defecto del modelo User.
      *
      * @return array<string, mixed>
      */
@@ -28,17 +35,17 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => self::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Marca el usuario como no verificado (email_verified_at = null).
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'email_verified_at' => null,
         ]);
     }

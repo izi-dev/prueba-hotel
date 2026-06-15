@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+/**
+ * Seeder principal de la aplicación.
+ *
+ * Orquesta la ejecución de seeders secundarios necesarios para el entorno
+ * inicial. Actualmente delega en `CatalogSeeder` los datos de referencia
+ * del dominio hotelero.
+ */
+final class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Ejecuta los seeders registrados en orden.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            CatalogSeeder::class,
         ]);
     }
 }
