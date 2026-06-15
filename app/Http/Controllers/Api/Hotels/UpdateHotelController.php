@@ -7,32 +7,37 @@ namespace App\Http\Controllers\Api\Hotels;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hotels\UpdateHotelRequest;
 use App\Http\Resources\HotelResource;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\PathParameter;
 use Src\Application\Hotels\UpdateHotel\UpdateHotelCommand;
 use Src\Application\Hotels\UpdateHotel\UpdateHotelHandler;
+use Src\Domain\Exceptions\DuplicateHotelException;
+use Src\Domain\Exceptions\HotelNotFoundException;
+use Src\Domain\Exceptions\RoomCountExceededException;
 
-/**
- * Controlador de actualización de hoteles.
- *
- * Expone el endpoint `PUT /api/v1/hotels/{id}` para modificar los datos
- * de un hotel existente.
- */
+#[Group(name: 'Hoteles', description: 'Gestión de hoteles.', weight: 20)]
 final class UpdateHotelController extends Controller
 {
-    /**
-     * @param  UpdateHotelHandler  $handler  Caso de uso que actualiza un hotel.
-     */
     public function __construct(
         private readonly UpdateHotelHandler $handler,
     ) {}
 
     /**
-     * Actualiza el hotel indicado y devuelve su representación actualizada.
-     *
-     * @param  int  $id  Identificador del hotel a modificar.
-     * @param  UpdateHotelRequest  $request  Datos validados del hotel.
+     * @throws HotelNotFoundException
+     * @throws DuplicateHotelException
+     * @throws RoomCountExceededException
      */
-    public function __invoke(int $id, UpdateHotelRequest $request): HotelResource
-    {
+    #[Endpoint(
+        operationId: 'hotels.update',
+        title: 'Actualizar hotel',
+        description: 'Modifica los datos del hotel. No se puede reducir `max_rooms` por debajo del total de habitaciones ya configuradas ni reutilizar un NIT de otro hotel.',
+    )]
+    public function __invoke(
+        #[PathParameter('id', description: 'Identificador del hotel.', example: 1)]
+        int $id,
+        UpdateHotelRequest $request,
+    ): HotelResource {
         $hotel = $this->handler->handle(new UpdateHotelCommand(
             id: $id,
             name: $request->validated(key: 'name'),

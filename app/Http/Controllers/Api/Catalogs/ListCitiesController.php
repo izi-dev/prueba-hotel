@@ -6,26 +6,22 @@ namespace App\Http\Controllers\Api\Catalogs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CityCollection;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
 use Src\Application\Catalogs\ListCities\ListCitiesHandler;
 
-/**
- * Controlador del catálogo de ciudades.
- *
- * Expone el endpoint `GET /api/v1/cities` para listar todas las ciudades
- * disponibles al registrar o editar hoteles.
- */
+#[Group(name: 'Catálogos', description: 'Datos maestros de solo lectura.', weight: 10)]
 final class ListCitiesController extends Controller
 {
-    /**
-     * @param  ListCitiesHandler  $handler  Caso de uso que obtiene el listado de ciudades.
-     */
     public function __construct(
         private readonly ListCitiesHandler $handler,
     ) {}
 
-    /**
-     * Devuelve el catálogo completo de ciudades.
-     */
+    #[Endpoint(
+        operationId: 'catalogs.cities.index',
+        title: 'Listar ciudades',
+        description: 'Devuelve el catálogo completo de ciudades disponibles para asociar a un hotel.',
+    )]
     public function __invoke(): CityCollection
     {
         return new CityCollection($this->handler->handle());

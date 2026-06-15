@@ -6,30 +6,31 @@ namespace App\Http\Controllers\Api\RoomConfigurations;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HotelRoomConfigurationCollection;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\PathParameter;
 use Src\Application\RoomConfigurations\ListRoomConfigurations\ListRoomConfigurationsHandler;
+use Src\Domain\Exceptions\HotelNotFoundException;
 
-/**
- * Controlador de listado de configuraciones de habitación.
- *
- * Expone el endpoint `GET /api/v1/hotels/{hotelId}/room-configurations`
- * para obtener todas las configuraciones de habitación de un hotel.
- */
+#[Group(name: 'Configuraciones', description: 'Configuración de habitaciones por hotel.', weight: 30)]
 final class ListRoomConfigurationsController extends Controller
 {
-    /**
-     * @param  ListRoomConfigurationsHandler  $handler  Caso de uso que lista configuraciones por hotel.
-     */
     public function __construct(
         private readonly ListRoomConfigurationsHandler $handler,
     ) {}
 
     /**
-     * Devuelve las configuraciones de habitación del hotel indicado.
-     *
-     * @param  int  $hotelId  Identificador del hotel.
+     * @throws HotelNotFoundException
      */
-    public function __invoke(int $hotelId): HotelRoomConfigurationCollection
-    {
+    #[Endpoint(
+        operationId: 'hotels.roomConfigurations.index',
+        title: 'Listar configuraciones de habitación',
+        description: 'Devuelve todas las configuraciones de habitación asociadas al hotel indicado.',
+    )]
+    public function __invoke(
+        #[PathParameter('hotelId', description: 'Identificador del hotel.', example: 1)]
+        int $hotelId,
+    ): HotelRoomConfigurationCollection {
         return new HotelRoomConfigurationCollection($this->handler->handle(hotelId: $hotelId));
     }
 }

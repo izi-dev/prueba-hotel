@@ -7,30 +7,30 @@ namespace App\Http\Controllers\Api\Hotels;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hotels\StoreHotelRequest;
 use App\Http\Resources\HotelResource;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Http\JsonResponse;
 use Src\Application\Hotels\CreateHotel\CreateHotelCommand;
 use Src\Application\Hotels\CreateHotel\CreateHotelHandler;
+use Src\Domain\Exceptions\DuplicateHotelException;
 
-/**
- * Controlador de creación de hoteles.
- *
- * Expone el endpoint `POST /api/v1/hotels` para registrar un nuevo hotel
- * validando sus datos de negocio (nombre, dirección, ciudad, NIT y cupo máximo).
- */
+#[Group(name: 'Hoteles', description: 'Gestión de hoteles.', weight: 20)]
 final class CreateHotelController extends Controller
 {
-    /**
-     * @param  CreateHotelHandler  $handler  Caso de uso que persiste un hotel nuevo.
-     */
     public function __construct(
         private readonly CreateHotelHandler $handler,
     ) {}
 
     /**
-     * Crea un hotel y devuelve su representación con código HTTP 201.
-     *
-     * @param  StoreHotelRequest  $request  Datos validados del hotel a crear.
+     * @throws DuplicateHotelException
      */
+    #[Endpoint(
+        operationId: 'hotels.store',
+        title: 'Crear hotel',
+        description: 'Registra un hotel nuevo. El NIT debe ser único en todo el sistema y tener el formato `12345678-9`.',
+    )]
+    #[Response(201, 'Hotel creado correctamente.', type: HotelResource::class)]
     public function __invoke(StoreHotelRequest $request): JsonResponse
     {
         $hotel = $this->handler->handle(new CreateHotelCommand(

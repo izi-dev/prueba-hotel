@@ -8,30 +8,25 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Solicitud HTTP para actualizar una configuración de habitación.
- *
- * Valida los datos de entrada del endpoint
- * `PUT /api/v1/hotels/{hotelId}/room-configurations/{configurationId}`.
  */
 final class UpdateRoomConfigurationRequest extends FormRequest
 {
-    /**
-     * Determina si el usuario autenticado puede realizar esta solicitud.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Reglas de validación para los campos de la configuración de habitación.
-     *
      * @return array<string, mixed>
      */
     public function rules(): array
     {
         return [
+            /** Tipo de habitación (`GET /api/v1/room-types`). @example 1 */
             'room_type_id' => ['required', 'integer', 'exists:room_types,id'],
+            /** Acomodación compatible con el tipo. @example 2 */
             'accommodation_id' => ['required', 'integer', 'exists:accommodations,id'],
+            /** Nueva cantidad de habitaciones para esta combinación. @example 15 */
             'quantity' => ['required', 'integer', 'min:1'],
         ];
     }

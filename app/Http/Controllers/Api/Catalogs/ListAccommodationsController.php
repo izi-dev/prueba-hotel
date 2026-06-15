@@ -6,26 +6,22 @@ namespace App\Http\Controllers\Api\Catalogs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AccommodationCollection;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
 use Src\Application\Catalogs\ListAccommodations\ListAccommodationsHandler;
 
-/**
- * Controlador del catálogo general de acomodaciones.
- *
- * Expone el endpoint `GET /api/v1/accommodations` para listar todas las
- * acomodaciones disponibles en el sistema.
- */
+#[Group(name: 'Catálogos', description: 'Datos maestros de solo lectura.', weight: 10)]
 final class ListAccommodationsController extends Controller
 {
-    /**
-     * @param  ListAccommodationsHandler  $handler  Caso de uso que obtiene el listado de acomodaciones.
-     */
     public function __construct(
         private readonly ListAccommodationsHandler $handler,
     ) {}
 
-    /**
-     * Devuelve el catálogo completo de acomodaciones.
-     */
+    #[Endpoint(
+        operationId: 'catalogs.accommodations.index',
+        title: 'Listar acomodaciones',
+        description: 'Devuelve todas las acomodaciones (Sencilla, Doble, Triple, Cuádruple). Para filtrar por tipo use el endpoint anidado bajo `room-types`.',
+    )]
     public function __invoke(): AccommodationCollection
     {
         return new AccommodationCollection($this->handler->handle());

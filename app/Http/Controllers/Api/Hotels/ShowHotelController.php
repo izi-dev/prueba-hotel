@@ -6,30 +6,31 @@ namespace App\Http\Controllers\Api\Hotels;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HotelResource;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\PathParameter;
 use Src\Application\Hotels\GetHotel\GetHotelHandler;
+use Src\Domain\Exceptions\HotelNotFoundException;
 
-/**
- * Controlador de consulta de un hotel.
- *
- * Expone el endpoint `GET /api/v1/hotels/{id}` para obtener el detalle
- * de un hotel, incluidas sus configuraciones de habitación.
- */
+#[Group(name: 'Hoteles', description: 'Gestión de hoteles.', weight: 20)]
 final class ShowHotelController extends Controller
 {
-    /**
-     * @param  GetHotelHandler  $handler  Caso de uso que obtiene un hotel por identificador.
-     */
     public function __construct(
         private readonly GetHotelHandler $handler,
     ) {}
 
     /**
-     * Devuelve el detalle del hotel solicitado.
-     *
-     * @param  int  $id  Identificador del hotel.
+     * @throws HotelNotFoundException
      */
-    public function __invoke(int $id): HotelResource
-    {
+    #[Endpoint(
+        operationId: 'hotels.show',
+        title: 'Obtener hotel',
+        description: 'Devuelve el detalle del hotel, incluyendo configuraciones de habitación y totales calculados.',
+    )]
+    public function __invoke(
+        #[PathParameter('id', description: 'Identificador del hotel.', example: 1)]
+        int $id,
+    ): HotelResource {
         return new HotelResource($this->handler->handle(id: $id));
     }
 }

@@ -6,30 +6,27 @@ namespace App\Http\Controllers\Api\Catalogs;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AccommodationCollection;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\PathParameter;
 use Src\Application\Catalogs\ListAccommodationsByRoomType\ListAccommodationsByRoomTypeHandler;
 
-/**
- * Controlador del catálogo de acomodaciones por tipo de habitación.
- *
- * Expone el endpoint `GET /api/v1/room-types/{roomTypeId}/accommodations`
- * para listar las acomodaciones compatibles con un tipo de habitación dado.
- */
+#[Group(name: 'Catálogos', description: 'Datos maestros de solo lectura.', weight: 10)]
 final class ListAccommodationsByRoomTypeController extends Controller
 {
-    /**
-     * @param  ListAccommodationsByRoomTypeHandler  $handler  Caso de uso que filtra acomodaciones por tipo de habitación.
-     */
     public function __construct(
         private readonly ListAccommodationsByRoomTypeHandler $handler,
     ) {}
 
-    /**
-     * Devuelve las acomodaciones asociadas al tipo de habitación indicado.
-     *
-     * @param  int  $roomTypeId  Identificador del tipo de habitación.
-     */
-    public function __invoke(int $roomTypeId): AccommodationCollection
-    {
+    #[Endpoint(
+        operationId: 'catalogs.roomTypes.accommodations',
+        title: 'Acomodaciones por tipo de habitación',
+        description: 'Lista solo las acomodaciones permitidas para el tipo indicado según las reglas de negocio (Estándar→Sencilla/Doble, Junior→Triple/Cuádruple, Suite→Sencilla/Doble/Triple).',
+    )]
+    public function __invoke(
+        #[PathParameter('roomTypeId', description: 'Identificador del tipo de habitación.', example: 1)]
+        int $roomTypeId,
+    ): AccommodationCollection {
         return new AccommodationCollection($this->handler->handle(roomTypeId: $roomTypeId));
     }
 }

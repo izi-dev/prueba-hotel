@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use App\OpenApi\DomainExceptionToResponseExtension;
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
+
+$apiDescriptionPath = dirname(__DIR__).'/docs/scramble-api-description.md';
 
 return [
     /*
@@ -45,7 +48,9 @@ return [
 
     'info' => [
         'version' => env('API_VERSION', '1.0.0'),
-        'description' => 'API REST para gestión de hoteles, catálogos y configuraciones de habitación.',
+        'description' => is_file($apiDescriptionPath)
+            ? mb_trim((string) file_get_contents($apiDescriptionPath))
+            : 'API REST para gestión de hoteles, catálogos y configuraciones de habitación.',
     ],
 
     'ui' => [
@@ -97,7 +102,10 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+    'servers' => [
+        'Producción' => 'api/v1',
+        'Local' => 'api/v1',
+    ],
 
     /**
      * Determines how Scramble stores the descriptions of enum cases.
@@ -140,7 +148,9 @@ return [
         RestrictedDocsAccess::class,
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        DomainExceptionToResponseExtension::class,
+    ],
 
     /*
      * Automatically document API security (OpenAPI `security` / `securitySchemes`) based on route
